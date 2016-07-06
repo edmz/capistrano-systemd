@@ -84,7 +84,7 @@ namespace :systemd do
           within "#{deploy_to}/systemd" do
             execute :cp, "./puma-#{fetch(:application)}.service", "/etc/systemd/system/puma-#{fetch(:application)}.service"
 	  end
-	  execute "sudo systemctl enable puma-#{fetch(:application)}.service"
+	  execute "sudo /bin/systemctl enable puma-#{fetch(:application)}.service"
 	else
           error "Puma systemd service isn't found. You should run systemd:puma:setup."
         end
@@ -96,7 +96,7 @@ namespace :systemd do
       invoke "systemd:puma:stop"
       on roles(:app) do
         if test "[ -f /etc/systemd/system/puma-#{fetch(:application)}.service ]"
-          execute "sudo systemctl disable puma-#{fetch(:application)}.service"
+          execute "sudo /bin/systemctl disable puma-#{fetch(:application)}.service"
           execute :rm, "-f", "/etc/systemd/system/puma-#{fetch(:application)}.service"
         else
           error "Puma systemd service isn't enabled."
@@ -120,7 +120,7 @@ namespace :systemd do
     task command do
       on roles(:app) do
         if test "[ -f /etc/systemd/system/puma-#{fetch(:application)}.service ]"
-          execute "sudo systemctl #{command} puma-#{fetch(:application)}.service"
+          execute "sudo /bin/systemctl #{command} puma-#{fetch(:application)}.service"
         else
           error "Puma systemd service isn't enabled."
         end
@@ -131,7 +131,7 @@ namespace :systemd do
     task :phased_restart do
       on roles(:app) do
         if test "[ -f /etc/systemd/system/puma-#{fetch(:application)}.service ]"
-          execute "sudo systemctl reload puma-#{fetch(:application)}.service"
+          execute "sudo /bin/systemctl reload puma-#{fetch(:application)}.service"
         else
           error "Puma systemd service isn't enabled."
         end
